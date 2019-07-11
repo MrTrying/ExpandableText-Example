@@ -19,9 +19,10 @@ public class MainActivity extends AppCompatActivity {
         int viewWidth = getWindowManager().getDefaultDisplay().getWidth() - dp2px(this, 20f);
         expandableTextView.initWidth(viewWidth);
         expandableTextView.setMaxLines(3);
+        expandableTextView.setHasAnimation(true);
         expandableTextView.setCloseInNewLine(true);
-        expandableTextView.setOpenSuffixColor(getResources().getColor(R.color.colorPrimary));
-        expandableTextView.setCloseSuffixColor(Color.parseColor("#008577"));
+        expandableTextView.setOpenSuffixColor(getResources().getColor(R.color.colorAccent));
+        expandableTextView.setCloseSuffixColor(getResources().getColor(R.color.colorAccent));
         expandableTextView.setOriginalText("在全球，随着Flutter被越来越多的知名公司应用在自己的商业APP中，" +
                 "Flutter这门新技术也逐渐进入了移动开发者的视野，尤其是当Google在2018年IO大会上发布了第一个" +
                 "Preview版本后，国内刮起来一股学习Flutter的热潮。\n\n为了更好的方便帮助中国开发者了解这门新技术" +
