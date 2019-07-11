@@ -14,7 +14,6 @@ import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.AlignmentSpan;
 import android.text.style.ClickableSpan;
-import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.AttributeSet;
 import android.view.View;
@@ -84,8 +83,14 @@ public class ExpandableTextView extends TextView {
     private void initialize() {
         mOpenSuffixColor = mCloseSuffixColor = Color.parseColor("#F23030");
         setMovementMethod(LinkMovementMethod.getInstance());
+        setIncludeFontPadding(false);
         updateOpenSuffixSpan();
         updateCloseSuffixSpan();
+    }
+
+    @Override
+    public boolean hasOverlappingRendering() {
+        return false;
     }
 
     public void setOriginalText(CharSequence originalText) {
@@ -154,15 +159,15 @@ public class ExpandableTextView extends TextView {
         if (mExpandable) {
             setText(mCloseSpannableStr);
             //设置监听
-//            super.setOnClickListener(new OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
+            super.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
 //                    switchOpenClose();
 //                    if (mOnClickListener != null) {
 //                        mOnClickListener.onClick(v);
 //                    }
-//                }
-//            });
+                }
+            });
         } else {
             setText(mOpenSpannableStr);
         }
@@ -443,8 +448,8 @@ public class ExpandableTextView extends TextView {
     }
 
     public OpenAndCloseCallback mOpenCloseCallback;
-    public void setOpenAndCloseCallback(OpenAndCloseCallback openAndCloseCallback){
-        this.mOpenCloseCallback = openAndCloseCallback;
+    public void setOpenAndCloseCallback(OpenAndCloseCallback callback){
+        this.mOpenCloseCallback = callback;
     }
 
     public interface OpenAndCloseCallback{
@@ -454,10 +459,10 @@ public class ExpandableTextView extends TextView {
     /**
      * 设置文本内容处理
      *
-     * @param charSequenceToSpannableHandler
+     * @param handler
      */
-    public void setCharSequenceToSpannableHandler(CharSequenceToSpannableHandler charSequenceToSpannableHandler) {
-        mCharSequenceToSpannableHandler = charSequenceToSpannableHandler;
+    public void setCharSequenceToSpannableHandler(CharSequenceToSpannableHandler handler) {
+        mCharSequenceToSpannableHandler = handler;
     }
 
     public interface CharSequenceToSpannableHandler {
@@ -479,6 +484,7 @@ public class ExpandableTextView extends TextView {
 
         @Override
         protected void applyTransformation(float interpolatedTime, Transformation t) {
+            mTargetView.setScrollY(0);
             //计算出每次应该显示的高度,改变执行view的高度，实现动画
             mTargetView.getLayoutParams().height = (int) ((mEndHeight - mStartHeight) * interpolatedTime + mStartHeight);
             mTargetView.requestLayout();
