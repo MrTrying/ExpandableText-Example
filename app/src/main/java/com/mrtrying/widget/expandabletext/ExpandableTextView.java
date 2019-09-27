@@ -11,7 +11,6 @@ import android.text.Spanned;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.text.TextUtils;
-import android.text.method.LinkMovementMethod;
 import android.text.style.AlignmentSpan;
 import android.text.style.ClickableSpan;
 import android.text.style.StyleSpan;
@@ -82,7 +81,7 @@ public class ExpandableTextView extends TextView {
     /** 初始化 */
     private void initialize() {
         mOpenSuffixColor = mCloseSuffixColor = Color.parseColor("#F23030");
-        setMovementMethod(LinkMovementMethod.getInstance());
+        setMovementMethod(OverLinkMovementMethod.getInstance());
         setIncludeFontPadding(false);
         updateOpenSuffixSpan();
         updateCloseSuffixSpan();
