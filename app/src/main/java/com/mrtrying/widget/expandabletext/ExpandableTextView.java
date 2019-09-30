@@ -1,6 +1,5 @@
 package com.mrtrying.widget.expandabletext;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
@@ -18,11 +17,13 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
-import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatTextView;
+
+import java.lang.reflect.Field;
 
 /**
  * Description :
@@ -30,9 +31,8 @@ import androidx.annotation.Nullable;
  * Created by mrtrying on 2019/4/17 17:21.
  * e_mail : ztanzeyu@gmail.com
  */
-@SuppressLint("AppCompatCustomView")
-public class ExpandableTextView extends TextView {
-    public static final String TAG = ExpandableTextView.class.getSimpleName();
+public class ExpandableTextView extends AppCompatTextView {
+    private static final String TAG = ExpandableTextView.class.getSimpleName();
 
     public static final String ELLIPSIS_STRING = new String(new char[]{'\u2026'});
     private static final int DEFAULT_MAX_LINE = 3;
@@ -303,12 +303,33 @@ public class ExpandableTextView extends TextView {
         int contentWidth = initWidth - getPaddingLeft() - getPaddingRight();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             return new StaticLayout(spannable, getPaint(), contentWidth, Layout.Alignment.ALIGN_NORMAL,
-                    getLineSpacingMultiplier(), getLineSpacingExtra(), false);
+                    getLineSpacingMultiplier(), getLineSpacingExtra(), getIncludeFontPadding());
         }else{
             return new StaticLayout(spannable, getPaint(), contentWidth, Layout.Alignment.ALIGN_NORMAL,
-                    1f, 0.0f, false);
+                    getFloatField("mSpacingMult",1f), getFloatField("mSpacingAdd",0f), getIncludeFontPadding());
         }
     }
+
+    private float getFloatField(String fieldName,float defaultValue){
+        float value = defaultValue;
+        if(TextUtils.isEmpty(fieldName)){
+            return value;
+        }
+        try {
+            // 获取该类的所有属性值域
+            Field[] fields = this.getClass().getDeclaredFields();
+            for (Field field:fields) {
+                if(TextUtils.equals(fieldName,field.getName())){
+                    value = field.getFloat(this);
+                    break;
+                }
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return value;
+    }
+
 
     /**
      * @param charSequence
