@@ -317,7 +317,14 @@ public class ExpandableTextView extends AppCompatTextView {
      */
     private Layout createStaticLayout(SpannableStringBuilder spannable) {
         int contentWidth = initWidth - getPaddingLeft() - getPaddingRight();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+	    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+		    StaticLayout.Builder builder = StaticLayout.Builder.obtain(spannable, 0, spannable.length(), getPaint(), contentWidth);
+		    builder.setAlignment(Layout.Alignment.ALIGN_NORMAL);
+		    builder.setIncludePad(getIncludeFontPadding());
+		    builder.setLineSpacing(getLineSpacingExtra(), getLineSpacingMultiplier());
+		    builder.setText(spannable);
+		    return builder.build();
+	    }else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             return new StaticLayout(spannable, getPaint(), contentWidth, Layout.Alignment.ALIGN_NORMAL,
                     getLineSpacingMultiplier(), getLineSpacingExtra(), getIncludeFontPadding());
         }else{
