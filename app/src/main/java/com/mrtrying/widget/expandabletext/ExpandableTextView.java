@@ -315,23 +315,22 @@ public class ExpandableTextView extends AppCompatTextView {
      *
      * @return
      */
-    private Layout createStaticLayout(SpannableStringBuilder spannable) {
-        int contentWidth = initWidth - getPaddingLeft() - getPaddingRight();
-	    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-		    StaticLayout.Builder builder = StaticLayout.Builder.obtain(spannable, 0, spannable.length(), getPaint(), contentWidth);
-		    builder.setAlignment(Layout.Alignment.ALIGN_NORMAL);
-		    builder.setIncludePad(getIncludeFontPadding());
-		    builder.setLineSpacing(getLineSpacingExtra(), getLineSpacingMultiplier());
-		    builder.setText(spannable);
-		    return builder.build();
-	    }else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            return new StaticLayout(spannable, getPaint(), contentWidth, Layout.Alignment.ALIGN_NORMAL,
-                    getLineSpacingMultiplier(), getLineSpacingExtra(), getIncludeFontPadding());
-        }else{
-            return new StaticLayout(spannable, getPaint(), contentWidth, Layout.Alignment.ALIGN_NORMAL,
-                    getFloatField("mSpacingMult",1f), getFloatField("mSpacingAdd",0f), getIncludeFontPadding());
-        }
+private Layout createStaticLayout(SpannableStringBuilder spannable) {
+    int contentWidth = initWidth - getPaddingLeft() - getPaddingRight();
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+        StaticLayout.Builder builder = StaticLayout.Builder.obtain(spannable, 0, spannable.length(), getPaint(), contentWidth);
+        builder.setAlignment(Layout.Alignment.ALIGN_NORMAL);
+        builder.setIncludePad(getIncludeFontPadding());
+        builder.setLineSpacing(getLineSpacingExtra(), getLineSpacingMultiplier());
+        return builder.build();
+    }else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+        return new StaticLayout(spannable, getPaint(), contentWidth, Layout.Alignment.ALIGN_NORMAL,
+                getLineSpacingMultiplier(), getLineSpacingExtra(), getIncludeFontPadding());
+    }else{
+        return new StaticLayout(spannable, getPaint(), contentWidth, Layout.Alignment.ALIGN_NORMAL,
+                getFloatField("mSpacingMult",1f), getFloatField("mSpacingAdd",0f), getIncludeFontPadding());
     }
+}
 
     private float getFloatField(String fieldName,float defaultValue){
         float value = defaultValue;
