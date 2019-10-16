@@ -143,6 +143,9 @@ public class ExpandableTextView extends AppCompatTextView {
                 }
                 int lastSpace = mCloseSpannableStr.length() - mOpenSuffixSpan.length();
                 if(lastSpace >= 0 && originalText.length() > lastSpace){
+                    CharSequence redundantChar = originalText.subSequence(lastSpace, lastSpace + mOpenSuffixSpan.length());
+                    int offset = hasEnCharCount(redundantChar) - hasEnCharCount(mOpenSuffixSpan) + 1;
+                    lastSpace = offset <= 0 ? lastSpace : lastSpace - offset;
                     mCloseSpannableStr = charSequenceToSpannable(originalText.subSequence(0, lastSpace));
                 }
                 //计算收起的文本高度
@@ -170,6 +173,19 @@ public class ExpandableTextView extends AppCompatTextView {
         } else {
             setText(mOpenSpannableStr);
         }
+    }
+
+    private int hasEnCharCount(CharSequence str){
+        int count = 0;
+        if(!TextUtils.isEmpty(str)){
+            for (int i = 0; i < str.length(); i++) {
+                char c = str.charAt(i);
+                if(c >= ' ' && c <= '~'){
+                    count++;
+                }
+            }
+        }
+        return count;
     }
 
     private void switchOpenClose() {
@@ -432,7 +448,7 @@ public class ExpandableTextView extends AppCompatTextView {
                 ds.setColor(mOpenSuffixColor);
                 ds.setUnderlineText(false);
             }
-        },0, mCloseSuffixStr.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        },0, mOpenSuffixStr.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
     }
 
     /** 更新收起后缀Spannable */
